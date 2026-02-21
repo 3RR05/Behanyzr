@@ -16,5 +16,5 @@ class Datasource(db.Model):
     texts = db.relationship('Textdata', backref= 'source', lazy= 'dynamic')
     
     def __repr__(self):
-        return f'~Datasource - {self.name}~'
+        return f'~Datasource - {self.id}~'
     

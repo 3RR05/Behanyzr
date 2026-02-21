@@ -6,11 +6,11 @@ class Textdata(db.Model):
     __tablename__ = 'Text_data'
     
     id = db.Column(db.Integer, primary_key= True)
-    source_id = db.Column(db.Integer, db.Foreignkey('data_source.id'), nullable= False)
+    source_id = db.Column(db.Integer, db.ForeignKey('data_source.id'), nullable= False)
     
     # Extracted Contents
     text = db.Column(db.Text, nullable= False)
-    author = db.Column(db.string(100))
+    author = db.Column(db.String(100))
     
     #Metadata
     collected_at = db.Column(db.DateTime, default= datetime.utcnow)
