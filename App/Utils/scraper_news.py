@@ -3,10 +3,10 @@ from datetime import datetime as dt
 from App import db
 from App.Model import Datasource, Textdata
 
-class scraper_api:
+class Newsscraper:
     """ Scrape News articles using API """
     
-    def __init__(self, api_key= None, query= "toodles", mx_art= 50):
+    def __init__(self, api_key= None, query= "economy", mx_art= 50):
         self.api_key= api_key
         self.query= query
         self.mx_art= mx_art
@@ -27,7 +27,7 @@ class scraper_api:
         
         try:
             
-            res= requests.get(self.base_url, prm=prm, timeout= 10)
+            res= requests.get(self.base_url, params=prm, timeout= 10)
             res.raise_for_status()
             
             deets= res.json()
@@ -49,13 +49,15 @@ class scraper_api:
                     })
 
             print(f"Gathered {len(arts)} Articles from {self.base_url}")
+            return arts
             
         except requests.exceptions.RequestException as e:
             print(f"Got some fishbone while fetching: {e}")
             return []
         except Exception as e:
             print(f"Got something thrown out while processing the Articles: {e}")
-            
+            return []
+        
     def save_db(self, arts):
         # Saving the Articles into Database
         
@@ -67,7 +69,7 @@ class scraper_api:
         if not source:
             source= Datasource(
                 name= f"NewsAPI - {self.query}",
-                source_type= "News"
+                source_type= "News",
                 url= self.base_url
             )
             
