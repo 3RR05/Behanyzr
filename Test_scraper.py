@@ -20,7 +20,7 @@ def test_scraper():
         if posts:
             print("\n Sample Posts :")
             for i, p in enumerate(posts[:3]):
-                print(f"\n {i}. {p['Title'][:100]}...\n Author : {p['Author']} \n Time : {p['Timestamp']}")
+                print(f"\n {i}. {p['text'][:100]}...\n Author : {p['author']} \n Time : {p['timestamp']}")
             
         # Save Into Database
         if posts:
