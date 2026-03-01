@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<!-- Statistics -->
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_sources }}</div>
+            <div class="stat-label">Data Sources</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_texts }}</div>
+            <div class="stat-label">Texts Collected</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_texts // max(total_sources, 1) }}</div>
+            <div class="stat-label">Avg per Source</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Collect Data</h5>
+                <p class="card-text">Scrape Reddit posts or fetch news articles to analyze behavior drift.</p>
+                <a href="{{ url_for('main.collect_data') }}" class="btn btn-primary">Start Collecting</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">View Sources</h5>
+                <p class="card-text">Browse and analyze existing data sources.</p>
+                <a href="{{ url_for('main.list_sources') }}" class="btn btn-primary">View All Sources</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Sources -->
+ 
+{% if recent_sources %}
+<div class="mt-5">
+    <h3>Recently Updated Sources</h3>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Last Scraped</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for source in recent_sources %}
+                <tr>
+                    <td>{{ source.name }}</td>
+                    <td><span class="badge bg-info">{{ source.source_type }}</span></td>
+                    <td>
+                        {% if source.last_scraped %}
+                            {{ source.last_scraped.strftime('%Y-%m-%d %H:%M') }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('main.analyze_source', source_id=source.id) }}" 
+                           class="btn btn-sm btn-primary">Analyze</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

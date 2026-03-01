@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Collect Data{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Collect Data</h1>
+
+<div class="row">
+    <!-- Reddit Form -->
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Scrape Reddit</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="source_type" value="reddit">
+                    
+                    <div class="mb-3">
+                        <label for="subreddit" class="form-label">Subreddit</label>
+                        <input type="text" class="form-control" id="subreddit" name="subreddit" 
+                               value="python" required>
+                        <div class="form-text">Enter subreddit name (without r/)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="max_posts" class="form-label">Max Posts</label>
+                        <input type="number" class="form-control" id="max_posts" name="max_posts" 
+                               value="50" min="10" max="100" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">Collect Reddit Posts</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- News API Form -->
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Fetch News Articles</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="source_type" value="news">
+                    
+                    <div class="mb-3">
+                        <label for="query" class="form-label">Search Query</label>
+                        <input type="text" class="form-control" id="query" name="query" 
+                               value="technology" required>
+                        <div class="form-text">Enter topic or keyword</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="max_articles" class="form-label">Max Articles</label>
+                        <input type="number" class="form-control" id="max_articles" name="max_articles" 
+                               value="50" min="10" max="100" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">Fetch News Articles</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Existing Sources -->
+ 
+{% if sources %}
+<div class="mt-4">
+    <h3>Existing Data Sources</h3>
+    <div class="list-group">
+        {% for source in sources %}
+        <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ source.name }}</h5>
+                <small>{{ source.source_type }}</small>
+            </div>
+            <p class="mb-1">
+                Last scraped: 
+                {% if source.last_scraped %}
+                    {{ source.last_scraped.strftime('%Y-%m-%d %H:%M') }}
+                {% else %}
+                    Never
+                {% endif %}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
