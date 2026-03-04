@@ -1,93 +1,85 @@
-{% extends 'base.html' %}
+{% extends 'Behanyzr.html' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Behanyzr - Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Dashboard</h1>
+<h1>Dashboard</h1>
 
-<!-- Statistics -->
+<!-- Stat cards -->
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-number">{{ total_sources }}</div>
-            <div class="stat-label">Data Sources</div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-number">{{ total_texts }}</div>
-            <div class="stat-label">Texts Collected</div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="stat-card">
-            <div class="stat-number">{{ total_texts // max(total_sources, 1) }}</div>
-            <div class="stat-label">Avg per Source</div>
-        </div>
-    </div>
+<div class="stat-grid cols3">
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ total_sources }}">0</div>
+    <div class="stat-label">Data Sources</div>
+  </div>
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ total_texts }}">0</div>
+    <div class="stat-label">Texts Collected</div>
+  </div>
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ total_texts // [total_sources, 1]|max }}">0</div>
+    <div class="stat-label">Average per Source</div>
+  </div>
 </div>
 
-<!-- Quick Actions -->
+<!-- Actions -->
 
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Collect Data</h5>
-                <p class="card-text">Scrape Reddit posts or fetch news articles to analyze behavior drift.</p>
-                <a href="{{ url_for('main.collect_data') }}" class="btn btn-primary">Start Collecting</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">View Sources</h5>
-                <p class="card-text">Browse and analyze existing data sources.</p>
-                <a href="{{ url_for('main.list_sources') }}" class="btn btn-primary">View All Sources</a>
-            </div>
-        </div>
-    </div>
+<p class="stitle">COLLECT AND VIEW SOURCES</p>
+<div class="action-grid">
+  <div class="gcard action-card">
+    <h5>Collect Data</h5>
+    <p>Scrape Reddit posts or news articles to analyze behavior drift.</p>
+    <a href="{{ url_for('main.collect_data') }}" class="rgb-btn">Start Collecting</a>
+  </div>
+  <div class="gcard action-card">
+    <h5>View Sources</h5>
+    <p>Browse and analyze existing data sources.</p>
+    <a href="{{ url_for('main.list_sources') }}" class="rgb-btn">View Sources</a>
+  </div>
 </div>
 
-<!-- Recent Sources -->
- 
+<!-- Recently updated sources -->
+
 {% if recent_sources %}
-<div class="mt-5">
-    <h3>Recently Updated Sources</h3>
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Last Scraped</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for source in recent_sources %}
-                <tr>
-                    <td>{{ source.name }}</td>
-                    <td><span class="badge bg-info">{{ source.source_type }}</span></td>
-                    <td>
-                        {% if source.last_scraped %}
-                            {{ source.last_scraped.strftime('%Y-%m-%d %H:%M') }}
-                        {% else %}
-                            Never
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ url_for('main.analyze_source', source_id=source.id) }}" 
-                           class="btn btn-sm btn-primary">Analyze</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<p class="stitle">Recent Sources</p>
+<div class="gcard scroll-section">
+  <div class="scroll-header">Recents</div>
+  <div class="scroll-body">
+    <table class="gtable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Last Scraped</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for source in recent_sources %}
+        <tr>
+          <td>{{ source.name }}</td>
+          <td>
+            <span class="badge {% if source.source_type == 'reddit' %}b-reddit{% else %}b-news{% endif %}">
+              {{ source.source_type }}
+            </span>
+          </td>
+          <td>
+            {% if source.last_scraped %}
+              {{ source.last_scraped.strftime('%b %d, %Y %H:%M') }}
+            {% else %}
+              <span class="badge b-warn">Never</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('main.analyze_source', source_id=source.id) }}" class="rgb-btn sm">
+              Analyze
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endif %}
-
 {% endblock %}

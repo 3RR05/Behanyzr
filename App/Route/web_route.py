@@ -11,17 +11,18 @@ from App.Utils.visual import Driftvisualizer
 
 
 @m_bp.route('/')
-def ind():
+def index():
     # Homepage
     
-    total_sources= Datasource.query.all()
+    total_sources= Datasource.query.count()
     total_texts= Textdata.query.count()
     recent_sources= Datasource.query.order_by(Datasource.last_scraped.desc()).limit(5).all()
     
-    return render_template('index.html', 
+    return render_template('B_index.html', 
                          total_sources=total_sources,
                          total_texts=total_texts,
-                         recent_sources=recent_sources)
+                         recent_sources=recent_sources,
+                         max=max)
 
 @m_bp.route('/collect', methods=['GET', 'POST'])
 def collect_data():
@@ -67,7 +68,7 @@ def collect_data():
         return redirect(url_for('main.collect_data'))
     
     sources = Datasource.query.all()
-    return render_template('collect.html', sources=sources)
+    return render_template('B_collect.html', sources=sources)
 
 @m_bp.route('/analyze/<int:source_id>')
 def analyze_source(source_id):
@@ -95,13 +96,13 @@ def analyze_source(source_id):
     
     # Generate drift report
     
-    drift_report = drift_detector.generate_drift_report(df)
+    drift_report = drift_detector.gen_drift_rpt(df)
     
     # Create visualizations
     
     charts = visualizer.create_dashboard(df, drift_report)
     
-    return render_template('analysis.html',
+    return render_template('B_analysis.html',
                          source=source,
                          report=drift_report,
                          charts=charts,
@@ -123,10 +124,10 @@ def list_sources():
             'text_count': text_count
         })
     
-    return render_template('sources.html', source_data=source_data)
+    return render_template('B_sources.html', source_data=source_data)
 
 @m_bp.route('/about')
 def about():
     # About page
     
-    return render_template('about.html')
+    return render_template('B_about.html')

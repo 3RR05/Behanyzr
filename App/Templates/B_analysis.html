@@ -1,0 +1,117 @@
+{% extends 'Behanyzr.html' %}
+
+{% block title %}Behanyzr - Analysis{{ source.name }}{% endblock %}
+
+{% block content %}
+<h1>Analysis for : {{ source.name }}</h1>
+
+<!-- Stat cards -->
+
+<div class="stat-grid cols4">
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ total_texts }}">0</div>
+    <div class="stat-label">Total Texts</div>
+  </div>
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ report.summary.total_windows }}">0</div>
+    <div class="stat-label">Time Windows</div>
+  </div>
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ report.summary.significant_sentiment_shifts }}">0</div>
+    <div class="stat-label">Sentiment Shifts</div>
+  </div>
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ report.summary.topic_shifts }}">0</div>
+    <div class="stat-label">Topic Shifts</div>
+  </div>
+</div>
+
+<!-- Overall trend -->
+
+<div class="trend-banner {% if report.summary.overall_sentiment_trend == 'positive' %}trend-pos{% else %}trend-neg{% endif %}">
+  <div class="trend-dot"></div>
+  <span>
+    <strong>Overall Trend :</strong> The sentiment is trending
+    <strong>{{ report.summary.overall_sentiment_trend }}</strong> over time.
+  </span>
+</div>
+
+<!-- Charts -->
+
+<p class="stitle">Visualizations</p>
+
+<div class="gcard chart-card chart-reveal">
+  <div class="chart-title">Sentiment Timeline</div>
+  <div class="chart-img-wrap">
+    <img src="{{ charts.sentiment_timeline }}" alt="Sentiment Timeline"/>
+  </div>
+</div>
+
+<div class="gcard chart-card chart-reveal">
+  <div class="chart-title">Sentiment Distribution</div>
+  <div class="chart-img-wrap">
+    <img src="{{ charts.sentiment_distribution }}" alt="Sentiment Distribution"/>
+  </div>
+</div>
+
+<div class="gcard chart-card chart-reveal">
+  <div class="chart-title">Activity Over Time</div>
+  <div class="chart-img-wrap">
+    <img src="{{ charts.activity_timeline }}" alt="Activity Timeline"/>
+  </div>
+</div>
+
+<div class="gcard chart-card chart-reveal">
+  <div class="chart-title">Vocabulary Comparison</div>
+  <div class="chart-img-wrap">
+    <img src="{{ charts.word_comparison }}" alt="Word Comparison"/>
+  </div>
+</div>
+
+<div class="gcard chart-card chart-reveal">
+  <div class="chart-title">Cumulative Drift</div>
+  <div class="chart-img-wrap">
+    <img src="{{ charts.cumulative_drift }}" alt="Cumulative Drift"/>
+  </div>
+</div>
+
+<!-- Significant shift table -->
+
+{% if report.significant_shifts %}
+<p class="stitle" style="margin-top:8px">Significant Sentiment Shifts</p>
+<div class="gcard scroll-section">
+  <div class="scroll-header">Detected Shifts</div>
+  <div class="scroll-body">
+    <table class="gtable">
+      <thead>
+        <tr>
+          <th>Time Window</th>
+          <th>Direction</th>
+          <th>Change</th>
+          <th>New Sentiment</th>
+          <th>Magnitude</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for shift in report.significant_shifts %}
+        <tr>
+          <td>{{ shift.time_window }}</td>
+          <td>
+            <span class="badge {% if shift.direction == 'positive' %}b-pos{% else %}b-neg{% endif %}">
+              {{ shift.direction }}
+            </span>
+          </td>
+          <td>{{ shift.change }}</td>
+          <td>{{ shift.new_sentiment }}</td>
+          <td>{{ shift.magnitude }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+<div style="margin-top:22px">
+  <a href="{{ url_for('main.list_sources') }}" class="rgb-btn">← Back to Sources</a>
+</div>
+{% endblock %}

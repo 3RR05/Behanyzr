@@ -67,8 +67,8 @@ class Preprocess:
     
     # Including Time Window column to Group
     
-    def crte_time_wdw(self, df, win= 'D'):
+    def crte_time_wdw(self, df, window= 'D'):
         df= df.copy()
-        df['time_window']= df['timestamp'].dt.to_period(win)
+        df['time_window']= df['timestamp'].dt.to_period(window)
         
         return df

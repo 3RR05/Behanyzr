@@ -5,6 +5,7 @@ app = create_app()
 @app.cli.command()
 def init_db():
     # Initializing DB
+    
     db.create_all()
     print("DB Initialized! `~`")
     

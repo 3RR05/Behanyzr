@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 # Initialization
 db = SQLAlchemy()
 
-def create_app(config_cls = 'App.Config.config'):
+def create_app(config_cls = 'App.Config.Config'):
     # App Factory Instance Initialization
     app = Flask(__name__)
     app.config.from_object(config_cls)
@@ -13,9 +13,9 @@ def create_app(config_cls = 'App.Config.config'):
     db.init_app(app)
     
     #Blueprint Registration
-    """from App.Route import main_bp, api_bp
-    app.register_blueprint(main_bp)
-    app.register_blueprint(api_bp, url_prefix = '/api')"""
+    from App.Route import m_bp, a_bp
+    app.register_blueprint(m_bp)
+    app.register_blueprint(a_bp, url_prefix = '/api')
     
     return app    
     

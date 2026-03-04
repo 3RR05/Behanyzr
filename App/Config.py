@@ -1,11 +1,13 @@
 import os
 
-class config:
+class Config:
     """Main Config"""
-    S_key = os.environ.get('S_Key') or'D_Key'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DB_URL') or 'sqlite:///Behanyzr.db'
+    
+    SECRET_KEY = os.environ.get('SECRET_KEY') or'D_Key'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///Behanyzr.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Scrapper Config
+    
     Max_Pg = 10
     R_Delay = 2    

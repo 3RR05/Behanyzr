@@ -6,10 +6,10 @@ from App.Model import Datasource, Textdata
 class Newsscraper:
     """ Scrape News articles using API """
     
-    def __init__(self, api_key= None, query= "economy", mx_art= 50):
+    def __init__(self, api_key= None, query= "economy", max_articles= 50):
         self.api_key= api_key
         self.query= query
-        self.mx_art= mx_art
+        self.mx_art= max_articles
         self.base_url= "https://newsapi.org/v2/everything"
         
     def scrape_arts(self):
