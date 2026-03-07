@@ -9,7 +9,7 @@
 
 ## 📊 Behanyzr - Behavior Drift Analyzer ~
 
- A web application that track and analyze behavior and sentiment drifts using data scraped from Reddit/NewsAPI (Able to scrap from other social media if changes some logics in Utility modules).
+ A web application that tracks and analyzes behavioral and sentiment shifts using data scraped from Reddit/NewsAPI (Able to scrap from other social media if make some changes in Utility modules).
 
 ### Click on this link to view the web application : https://behanyzr.onrender.com
 
