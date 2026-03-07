@@ -13,6 +13,7 @@ def create_app(config_cls = 'App.Config.Config'):
     db.init_app(app)
     
     with app.app_context():
+        from App.Model import Datasource, Textdata  # import data models
         db.create_all()
     
     #Blueprint Registration
