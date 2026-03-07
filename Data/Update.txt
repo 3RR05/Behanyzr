@@ -1,4 +1,4 @@
-🔮This Data folder presents here because of future updation might include a data collectoin downloader which saves the processed and raw data into those folders🔮
+🔮This Data folder presents here because of future updation might include a data collection downloader which saves the processed and raw data into those folders🔮
 
 P.S ~
     You can add those above mentioned feature, incase if you want to add more manual control and analysis over the data. 
