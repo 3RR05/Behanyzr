@@ -6,7 +6,7 @@ db = SQLAlchemy()
 
 def create_app(config_cls = 'App.Config.Config'):
     # App Factory Instance Initialization
-    app = Flask(__name__)
+    app = Flask(__name__,template_folder='Template', static_folder='Static')
     app.config.from_object(config_cls)
     
     # Initialization With The App
