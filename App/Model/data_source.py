@@ -13,7 +13,7 @@ class Datasource(db.Model):
     last_scraped = db.Column(db.DateTime)
     
     # Relationship To The Collected Texts
-    texts = db.relationship('Textdata', backref= 'source', lazy= 'dynamic')
+    texts = db.relationship('Textdata', backref='source', lazy='select', cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'~Datasource - {self.id}~'

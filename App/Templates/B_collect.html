@@ -3,7 +3,7 @@
 {% block title %}Behanyzr - Collect Data{% endblock %}
 
 {% block content %}
-<h1>Collect Data</h1>
+<h1>Collect Data <img src="{{ url_for('static', filename='Images/B_collect.gif') }}" style="width:25px;height:25px;vertical-align:-4px" /></h1>
 
 <!-- Form -->
 
@@ -12,7 +12,7 @@
   <!-- Reddit form -->
 
   <div class="gcard">
-    <div class="form-card-head reddit">🤖 Scrape Reddit</div>
+    <div class="form-card-head reddit"><img src="{{ url_for('static', filename='Images/B_reddit.gif') }}" style="width:20px;height:20px;vertical-align:-4px" /> &ensp;Scrape Reddit Posts</div>
     <div class="form-body">
       <form method="POST" onsubmit="startLoad('reddit')">
         <input type="hidden" name="source_type" value="reddit"/>
@@ -28,8 +28,14 @@
         <button type="submit" class="rgb-btn full" id="redditBtn">Collect</button>
         <div class="loading-ind" id="redditLoad">
           <div class="ldots"><span></span><span></span><span></span></div>
-          Collecting Reddit posts...It takes some time
+          <span>Collecting Reddit posts...It takes some times &ensp;(<span id="redditTime"></span>)</span>
         </div>
+        <a href="{{ url_for('main.list_sources') }}"
+           class="rgb-btn full sources-link"
+           id="redditSourcesBtn"
+           style="margin-top:10px;text-align:center;{% if not collected_reddit %}display:none{% endif %}">
+          View Sources
+        </a>
       </form>
     </div>
   </div>
@@ -37,7 +43,7 @@
   <!-- News form -->
 
   <div class="gcard">
-    <div class="form-card-head news">📰 Scrape News Articles (NewsAPI)</div>
+    <div class="form-card-head news"><img src="{{ url_for('static', filename='Images/B_news.gif') }}" style="width:20px;height:20px;vertical-align:-4px" /> &ensp;Scrape News Articles (NewsAPI)</div>
     <div class="form-body">
       <form method="POST" onsubmit="startLoad('news')">
         <input type="hidden" name="source_type" value="news"/>
@@ -53,15 +59,21 @@
         <button type="submit" class="rgb-btn full" id="newsBtn">Fetch</button>
         <div class="loading-ind" id="newsLoad">
           <div class="ldots"><span></span><span></span><span></span></div>
-          Fetching news articles...It takes some time
+          Fetching news articles...It takes some time &ensp;(<span id="redditTime"></span>)
         </div>
+        <a href="{{ url_for('main.list_sources') }}"
+           class="rgb-btn full sources-link"
+           id="newsSourcesBtn"
+           style="margin-top:10px;text-align:center;{% if not collected_news %}display:none{% endif %}">
+          View Sources
+        </a>
       </form>
     </div>
   </div>
 
 </div>
 
-<!-- EXISTING SOURCES -->
+<!-- Existing sources -->
 
 {% if sources %}
 <p class="stitle">Existing Data Sources</p>
@@ -93,11 +105,86 @@
 
 {% block extra_js %}
 <script>
+// ── Audio setup ──
+// Replace these paths with your actual audio file paths in static/
+
+const collectingAudio = new Audio("{{ url_for('static', filename='Audio/B_RondoAllaTurca_GregorQuendel.mp3') }}");
+const doneAudio       = new Audio("{{ url_for('static', filename='Audio/B_Done.mp3') }}");
+
+collectingAudio.loop = true;   // loops until data is collected
+doneAudio.loop       = false;  // plays once
+
 function startLoad(type) {
   const btn    = document.getElementById(type === 'reddit' ? 'redditBtn' : 'newsBtn');
   const loader = document.getElementById(type === 'reddit' ? 'redditLoad' : 'newsLoad');
+  const timeEl = document.getElementById(type === 'reddit' ? 'redditTime' : 'newsTime');
+
+  sessionStorage.setItem('collectStart', Date.now());
+  sessionStorage.setItem('collectType', type);
+
   btn.classList.add('loading');
   loader.classList.add('show');
+
+   // Live elapsed timer
+
+  let elapsed = 0;
+  timeEl.textContent = '0s elapsed';
+  setInterval(() => {
+    elapsed++;
+    if (elapsed < 60) {
+      timeEl.textContent = `${elapsed}s elapsed`;
+    } else {
+      const mins = Math.floor(elapsed / 60);
+      const secs = elapsed % 60;
+      timeEl.textContent = secs > 0 ? `${mins}m ${secs}s elapsed` : `${mins}m elapsed`;
+    }
+  }, 1000);
+
+  collectingAudio.currentTime = 0;
+  collectingAudio.play().catch(() => {});  // catch autoplay block silently
 }
+
+// Append elapsed time to flash message after collection
+
+window.addEventListener('load', () => {
+  const start = sessionStorage.getItem('collectStart');
+  if (start) {
+    const elapsed = Math.floor((Date.now() - parseInt(start)) / 1000);
+    const label = elapsed < 60 ? `${elapsed}s` : `${Math.floor(elapsed/60)}m ${elapsed%60}s`;
+    const flashMsg = document.querySelector('.flash-msg');
+    if (flashMsg) {
+      // Insert time before the close button
+
+      const close = flashMsg.querySelector('.flash-close');
+      const span = document.createElement('span');
+      span.style.cssText = 'margin-left:8px;opacity:0.7;font-size:.8rem;';
+      span.textContent = `(Took ${label})`;
+      flashMsg.insertBefore(span, close);
+    }
+    sessionStorage.removeItem('collectStart');
+    sessionStorage.removeItem('collectType');
+  }
+});
+
+// ── ON PAGE LOAD: if data was just collected, stop collecting audio & play done audio ──
+
+window.addEventListener('load', () => {
+  const justCollected = {{ 'true' if collected_reddit or collected_news else 'false' }};
+
+  if (justCollected) {
+    collectingAudio.pause();
+    collectingAudio.currentTime = 0;
+
+    doneAudio.currentTime = 0;
+    doneAudio.play().catch(() => {});
+
+    // Stops audio after 3 seconds
+
+    setTimeout(() => {
+      doneAudio.pause();
+      doneAudio.currentTime = 0;
+    }, 3000);
+  }
+});
 </script>
 {% endblock %}

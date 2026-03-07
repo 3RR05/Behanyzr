@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: behanyzr
+    env: python
+    buildCommand: pip install -r Req.txt
+    startCommand: python B_server.py

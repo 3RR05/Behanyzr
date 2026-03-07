@@ -23,7 +23,7 @@ def get_sources():
             'url': s.url,
             'created_at': s.created_at.isoformat() if s.created_at else None,
             'last_scraped': s.last_scraped.isoformat() if s.last_scraped else None,
-            'text_count': s.texts.count()
+            'text_count': Textdata.query.filter_by(source_id=s.id).count()
         } for s in sources]
     })
 
@@ -42,7 +42,7 @@ def get_source(source_id):
             'url': source.url,
             'created_at': source.created_at.isoformat() if source.created_at else None,
             'last_scraped': source.last_scraped.isoformat() if source.last_scraped else None,
-            'text_count': source.texts.count()
+            'text_count': Textdata.query.filter_by(source_id=source.id).count()
         }
     })
 

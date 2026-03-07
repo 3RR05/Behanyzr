@@ -41,7 +41,7 @@ def collect_data():
                 
                 if posts:
                     saved = scraper.save_db(posts)
-                    flash(f'Collected {saved} posts from r/{subreddit}', 'Success')
+                    flash(f'Collected {saved} text contents from r/{subreddit}', 'Success')
                 else:
                     flash('Not even a fly collected, perhaps the subreddit might not exist', 'Warning')
                     
@@ -65,10 +65,13 @@ def collect_data():
             except Exception as e:
                 flash(f'Something wrong while collecting data : {str(e)}', 'Danger')
         
-        return redirect(url_for('main.collect_data'))
+        return redirect(url_for('main.collect_data', collected=source_type))
     
     sources = Datasource.query.all()
-    return render_template('B_collect.html', sources=sources)
+    collected = request.args.get('collected')
+    return render_template('B_collect.html', sources=sources,
+                           collected_reddit=(collected == 'reddit'),
+                           collected_news=(collected == 'news'))
 
 @m_bp.route('/analyze/<int:source_id>')
 def analyze_source(source_id):
@@ -125,6 +128,52 @@ def list_sources():
         })
     
     return render_template('B_sources.html', source_data=source_data)
+
+@m_bp.route('/sources/delete/<int:source_id>', methods=['POST'])
+def delete_source(source_id):
+    # Delete a specific source and all its associated text data
+    
+    source = Datasource.query.get_or_404(source_id)
+    source_name = source.name
+    
+    try:
+        db.session.delete(source)
+        db.session.commit()
+        flash(f'"{source_name}" and all its data has been deleted.', 'Success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Failed to delete source: {str(e)}', 'Danger')
+    
+    return redirect(url_for('main.list_sources'))
+
+
+@m_bp.route('/sources/delete-all', methods=['POST'])
+def delete_all_sources():
+    # Delete all sources and all associated text data
+    """
+    try:
+        count = Datasource.query.count()
+        Datasource.query.delete()
+        db.session.commit()
+        flash(f'All {count} source(s) and their data have been deleted.', 'Success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Failed to delete all sources: {str(e)}', 'Danger')
+    
+    return redirect(url_for('main.list_sources'))"""
+    try:
+        sources = Datasource.query.all()
+        count = len(sources)
+        for source in sources:
+            db.session.delete(source)
+        db.session.commit()
+        flash(f'All {count} source(s) and their data have been deleted.', 'Success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Failed to delete all sources: {str(e)}', 'Danger')
+    
+    return redirect(url_for('main.list_sources'))
+
 
 @m_bp.route('/about')
 def about():

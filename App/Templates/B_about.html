@@ -1,0 +1,114 @@
+{% extends 'Behanyzr.html' %}
+
+{% block title %}Behanyzr - About{% endblock %}
+
+{% block content %}
+<h1>About Behanyzr <a href="#" id="discoBtn" onclick="toggleDiscoAudio(event)" target="_blank"><img id="disco" src="{{ url_for('static', filename='Images/B_about.gif') }}"/></a></h1>
+
+<div class="gcard about-card chart-reveal">
+  <div class="bda-img-wrap">
+    <img src="{{ url_for('static', filename='Images/B_Icon_lh.png') }}" alt="Behavior Drift" class="bda-slide-img"/>
+  </div>
+
+  <p>
+    Behanyzr helps to analyze Behaviour shifts by scraping data from reddit and NewsAPI 
+    along with visual graph presentation, The one who sees this can modify this project 
+    if any logical problems wanders in it.
+  </p>
+</div>
+
+<div class="gcard about-card chart-reveal">
+  <h3>💡 How It Works</h3>
+  <div class="about-grid">
+    <div>
+      <div class="step-num">1</div>
+      <strong style="color:var(--text)">Collect</strong>
+      <p>Scrape Reddit posts or News articles via PRAW(Python Reddit API Wrapper) and NewsAPI.</p>
+    </div>
+    <div>
+      <div class="step-num">2</div>
+      <strong style="color:var(--text)">Process</strong>
+      <p>Process the collected data by cleaning texts and remove symbols.</p>
+    </div>
+    <div>
+      <div class="step-num">3</div>
+      <strong style="color:var(--text)">Analyze</strong>
+      <p>Apply VADER sentiment analysis and TF-IDF(Like converting the data into Dataframe to perform query actions) topic modeling across time windows.</p>
+    </div>
+    <div>
+      <div class="step-num">4</div>
+      <strong style="color:var(--text)">Visualize</strong>
+      <p>Generate Matplotlib/Seaborn charts and statistical drift reports.</p>
+    </div>
+  </div>
+</div>
+
+<div class="gcard about-card chart-reveal">
+  <h3>⚖️ Ethics &amp; Limitations</h3>
+  <div class="about-grid">
+    <div>
+      <strong style="color:var(--accent2);font-size:.85rem;text-transform:uppercase;letter-spacing:.05em">Ethical Considerations</strong>
+      <ul style="margin-top:10px">
+        <li>✅ Respects robots.txt By Delaying request frequence and Rate Limiting</li>
+        <li>✅ Scrapes publicly available data only</li>
+        <li>✅ Mentioning User-agent name to prevent Misconception of Bot</li>
+        <li>✅ No personal data collection(Guess so..)</li>
+        <li>✅ Clearly for Educational purpose only(Mentioned on request header)</li>
+        <li>✅ A music called Rondo Alla Turca composed by Mozart and arranged by Gregor Quendel has been used under the artist's license and used a sound effect and music from Mixkit</li>
+      </ul>
+    </div>
+    <div>
+      <strong style="color:var(--badge-negative-fg);font-size:.85rem;text-transform:uppercase;letter-spacing:.05em">Limitations</strong>
+      <ul style="margin-top:10px">
+        <li>⚠️ Rule-based sentiment (Not deep learning, so accuracy won't hit the mark perfectly sometimes)</li>
+        <li>⚠️ English language only(Sorry, Might implement multiple languages in future)</li>
+        <li>⚠️ Limited data sources (Reddit, NewsAPI)</li>
+        <li>⚠️ No real-time streaming</li>
+        <li>⚠️ Basic context understanding(Lack of DL models limits the analysis)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="gcard about-card chart-reveal" style="text-align:center">
+  <h3>🔗 Link &amp; Resource</h3>
+  <div style="display:flex;justify-content:center;gap:12px;margin-top:16px;flex-wrap:wrap">
+    <a href="https://github.com/3RR05/Behanyzr" target="_blank" class="rgb-btn">🗄️ GitHub Repository</a>
+    <a href="{{ url_for('main.index') }}" class="rgb-btn">🏠 Back to Dashboard</a>
+  </div>
+  <p style="color:var(--text-muted);font-size:.78rem;margin-top:14px">💫 If you find this project interesting and want to add any features and bug fixes, feel free to push request! 💫</p>
+</div>
+
+<div class="loading-ind show" style="margin-top:16px;background:rgba(100,160,255,.08);border-color:rgba(100,160,255,.2)">
+  <span style="color:#64a0ff">ℹ️</span>
+  <span style="color:var(--text-muted);font-size:.82rem">Behanyzr uses <strong>Rule-based</strong> sentiment analysis for demonstration which might approximately calculate the shifts, Advanced Deep learning models might come in future updates.</span>
+</div>
+
+{% block extra_css %}
+<style>
+  #disco{width:25px;height:25px;vertical-align:-4px;transition:0.3s}
+  #disco:hover{width:35px;height:35px;vertical-align:-8px}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const discoAudio = new Audio("{{ url_for('static', filename='Audio/B_db.mp3') }}");
+discoAudio.loop = true;
+let discoPlaying = false;
+
+function toggleDiscoAudio(e) {
+  e.preventDefault();
+  if (discoPlaying) {
+    discoAudio.pause();
+    discoAudio.currentTime = 0;
+    discoPlaying = false;
+  } else {
+    discoAudio.play().catch(() => {});
+    discoPlaying = true;
+  }
+}
+</script>
+{% endblock %}
+
+{% endblock %}

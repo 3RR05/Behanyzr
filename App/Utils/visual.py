@@ -125,7 +125,33 @@ class Driftvisualizer:
         'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'be',
         'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will',
         'would', 'should', 'could', 'may', 'might', 'must', 'can', 'this',
-        'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they'
+        'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they',
+        'my', 'your', 'his', 'her', 'its', 'our', 'their', 'me', 'him', 'us', 'them',
+        'who', 'what', 'which', 'whose', 'whom', 'myself', 'yourself', 'himself',
+        'herself', 'itself', 'ourselves', 'themselves', 'each', 'every', 'all',
+        'both', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'not', 'only',
+        'same', 'so', 'than', 'too', 'very', 'just', 'any', 'either', 'neither',
+        'about', 'above', 'after', 'against', 'along', 'among', 'around', 'before',
+        'behind', 'below', 'beneath', 'beside', 'between', 'beyond', 'during',
+        'except', 'if', 'into', 'near', 'off', 'out', 'outside', 'over', 'past',
+        'since', 'through', 'throughout', 'till', 'under', 'until', 'up', 'upon',
+        'while', 'within', 'without', 'although', 'because', 'unless', 'whether',
+        'though', 'when', 'where', 'how', 'why', 'then', 'however', 'also',
+        'get', 'got', 'getting', 'go', 'going', 'went', 'gone', 'make', 'made',
+        'making', 'know', 'knew', 'knowing', 'think', 'thought', 'thinking',
+        'take', 'took', 'taken', 'come', 'came', 'coming', 'see', 'saw', 'seen',
+        'use', 'used', 'using', 'want', 'wanted', 'say', 'said', 'saying',
+        'look', 'looked', 'looking', 'give', 'gave', 'given', 'keep', 'kept',
+        'let', 'put', 'seem', 'seemed', 'tell', 'told', 'try', 'tried', 'ask',
+        'need', 'feel', 'felt', 'become', 'became', 'leave', 'left', 'mean',
+        'like', 'just', 'really', 'actually', 'basically', 'literally', 'pretty',
+        'even', 'still', 'already', 'always', 'never', 'ever', 'yet', 'often',
+        'much', 'many', 'lot', 'lots', 'things', 'thing', 'people', 'person',
+        'way', 'time', 'times', 'year', 'years', 'day', 'days', 'something',
+        'anything', 'everything', 'nothing', 'someone', 'anyone', 'everyone',
+        'first', 'new', 'good', 'well', 'back', 'right', 'old',
+        'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+        'eight', 'nine', 'ten', 'also', 'etc', 'ie', 'eg', 'vs', 'per', 're'
         }
         
         windows = sorted(vocab_evolution.keys())
@@ -141,6 +167,14 @@ class Driftvisualizer:
             ax = axes[idx]
             
             fil= [(w, c) for w, c in vocab_evolution[window]['top_words'] if w.lower() not in exp ]
+            if not fil:
+                ax.text(0.5, 0.5, 'No meaningful words\nfound after filtering', 
+                        ha='center', va='center', transform=ax.transAxes, 
+                        fontsize=12, color='gray', style='italic')
+                ax.set_title(f'Top Words: {window}', fontsize=12, fontweight='bold')
+                ax.axis('off')
+                continue
+            
             words, counts = zip(*fil[:15])
             
             # Horizontal bar chart
@@ -156,7 +190,7 @@ class Driftvisualizer:
         
         plt.tight_layout()
         return self.to_base64(fig)
-    
+         
     def plt_cumul_drift(self, drift_df, title="Cumulative Sentiment Drift"):
         # Show cumulative sentiment change
 

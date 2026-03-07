@@ -1,0 +1,220 @@
+{% extends 'Behanyzr.html' %}
+
+{% block title %}Behanyzr - Data Sources{% endblock %}
+
+{% block content %}
+<h1>Data Source <img src="{{ url_for('static', filename='Images/B_source.gif') }}" style="width:25px;height:25px;vertical-align:-4px" /></h1>
+<p style="color:var(--text-muted);font-size:.9rem;margin-bottom:22px;line-height:1.6">
+  Manage and analyze all your collected data sources.
+</p>
+
+{% if source_data %}
+
+<!-- Sources table -->
+
+<div class="gcard scroll-section">
+  <div class="scroll-header">All Sources</div>
+  <div class="scroll-body">
+    <table class="gtable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Text Count</th>
+          <th>Created</th>
+          <th>Last Scraped</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in source_data %}
+        <tr>
+          <td>
+            <strong>{{ item.source.name }}</strong>
+            {% if item.source.url %}
+              <br/><small style="color:var(--text-muted)">
+                <a href="{{ item.source.url }}" target="_blank" style="color:var(--accent);text-decoration:none">View Source ↗</a>
+              </small>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge {% if item.source.source_type == 'reddit' %}b-reddit{% elif item.source.source_type == 'news' %}b-news{% else %}b-info{% endif %}">
+              {{ item.source.source_type }}
+            </span>
+          </td>
+          <td><span class="badge b-info">{{ item.text_count }} Texts</span></td>
+          <td>
+            {% if item.source.created_at %}
+              {{ item.source.created_at.strftime('%b %d, %Y') }}
+            {% else %}
+              <span style="color:var(--text-muted)">N/A</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if item.source.last_scraped %}
+              <span class="badge b-info">{{ item.source.last_scraped.strftime('%b %d, %Y %H:%M') }}</span>
+            {% else %}
+              <span class="badge b-warn">Never</span>
+            {% endif %}
+          </td>
+          <td style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <a href="{{ url_for('main.analyze_source', source_id=item.source.id) }}"
+               class="rgb-btn sm {% if item.text_count == 0 %}loading{% endif %}"
+               {% if item.text_count == 0 %}title="No data to analyze"{% endif %}>
+              Analyze
+            </a>
+            <button type="button"
+                    class="rgb-btn sm del-btn"
+                    onclick="confirmDelete({{ item.source.id }}, '{{ item.source.name | e }}')">
+              Delete
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Summary -->
+
+<div class="stat-grid cols3" style="margin-top:8px">
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ source_data|length }}">0</div>
+    <div class="stat-label">Total Sources</div>
+  </div>
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ source_data | sum(attribute='text_count') }}">0</div>
+    <div class="stat-label">Total Texts</div>
+  </div>
+  <div class="gcard stat-card">
+    <div class="stat-number" data-target="{{ (source_data | sum(attribute='text_count') / source_data|length) | round | int if source_data|length > 0 else 0 }}">0</div>
+    <div class="stat-label">Average per Source</div>
+  </div>
+</div>
+
+{% else %}
+
+<div class="gcard" style="padding:32px;text-align:center">
+  <div style="font-size:2.5rem"><img src="{{ url_for('static', filename='Images/B_hmbr.gif') }}" style="width:80px;height:80px" /></div>
+  <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;color:var(--text)">No Data Source has been scooped Yet, Chooms!</h3>
+  <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:20px">
+    Buckle up, We have a data mall to scrape.
+  </p>
+  <a href="{{ url_for('main.collect_data') }}" class="rgb-btn">➕ Collect Data</a>
+</div>
+
+{% endif %}
+<div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+  <a href="{{ url_for('main.collect_data') }}" class="rgb-btn">➕ Collect Data</a>
+  <a href="{{ url_for('main.index') }}" class="rgb-btn">← Back to Dashboard</a>
+  {% if source_data %}
+  <button type="button" class="rgb-btn del-btn" onclick="confirmDeleteAll()">Delete All Sources</button>
+  {% endif %}
+</div>
+
+<!-- Single delete popup -->
+
+<div id="deleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;border-radius:20px">
+  <div class="gcard" style="max-width:420px;width:90%;padding:28px;text-align:center;border-radius:45px">
+    <div style="font-size:2rem;margin-bottom:10px">⚠️</div>
+    <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;color:var(--text)">Delete Source?</h3>
+    <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:20px">
+      This will permanently delete <strong id="deleteSourceName" style="color:var(--text)"></strong> and <strong>all</strong> its collected text data. This cannot be undone by any means(might have any mean).
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="rgb-btn" onclick="closeModal('deleteModal')">Nah!, Back out</button>
+      <form id="deleteForm" method="POST" style="margin-top:2px">
+        <button type="submit" class="rgb-btn del-btn">Yes, Wipe Them</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete all popup -->
+
+<div id="deleteAllModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center;border-radius:20px">
+  <div class="gcard" style="max-width:420px;width:90%;padding:28px;text-align:center;border-radius:45px">
+    <div style="font-size:2rem;margin-bottom:10px">⚠️</div>
+    <h3 style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:8px;color:var(--text)">Delete Everything?</h3>
+    <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:20px">
+      This will permanently delete <strong style="color:var(--text)">all sources</strong> and every piece of collected text data across all subreddits and news topics. Are you sure you want to do this?
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="rgb-btn" onclick="closeModal('deleteAllModal')">Nah!, Back out</button>
+      <form action="{{ url_for('main.delete_all_sources') }}" method="POST" style="margin-top:2px">
+        <button type="submit" class="rgb-btn del-btn">Yes, Strike out all</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .del-btn {
+    background: linear-gradient(135deg, #ca5151, #d60909) !important;
+    border-color: #ff4444 !important;
+    padding: 8.5px 12px !important;
+  }
+  .del-btn:hover {
+    background: linear-gradient(135deg, #ff6666, #ee2222) !important;
+    box-shadow: 0 0 14px rgba(255,68,68,.5) !important;
+    transform:translateY(-2px)
+  }
+  #deleteModal[style*="flex"], #deleteAllModal[style*="flex"] {
+    display: flex !important;
+  }
+</style>
+
+<script>
+// ── Remove Audio ──
+// Place your audio file at: static/Audio/delete_confirm.mp3
+
+const deletePopupAudio = new Audio("{{ url_for('static', filename='Audio/B_bg.wav') }}");
+deletePopupAudio.loop = false;
+
+function playDeleteAudio() {
+  deletePopupAudio.currentTime = 0;
+  deletePopupAudio.play().catch(() => {});
+  // Hard stop after 6s — change this number to adjust duration
+
+  setTimeout(() => {
+    deletePopupAudio.pause();
+    deletePopupAudio.currentTime = 0;
+  }, 6000);
+}
+
+function stopDeleteAudio() {
+  deletePopupAudio.pause();
+  deletePopupAudio.currentTime = 0;
+}
+
+function confirmDelete(sourceId, sourceName) {
+  document.getElementById('deleteSourceName').textContent = '"' + sourceName + '"';
+  document.getElementById('deleteForm').action = '/sources/delete/' + sourceId;
+  document.getElementById('deleteModal').style.display = 'flex';
+  playDeleteAudio();
+}
+
+function confirmDeleteAll() {
+  document.getElementById('deleteAllModal').style.display = 'flex';
+  playDeleteAudio();
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+  stopDeleteAudio();
+}
+
+// Close popup on backdrop click
+
+document.addEventListener('click', function(e) {
+  ['deleteModal','deleteAllModal'].forEach(function(id) {
+    const modal = document.getElementById(id);
+    if (e.target === modal) {
+      modal.style.display = 'none';
+      stopDeleteAudio();
+    }
+  });
+});
+</script>
+{% endblock %}

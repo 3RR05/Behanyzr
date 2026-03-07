@@ -95,15 +95,27 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
 .topnav-left{display:flex;align-items:center;gap:10px;}
 
 /* ── ICON BUTTONS ── */
-.icon-btn{width:36px;height:36px;border:none;background:transparent;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .25s;color:var(--text);flex-shrink:0}
+.icon-btn{width:50px;height:50px;border:none;background:transparent;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .25s;color:var(--text);flex-shrink:0}
 .icon-btn:hover{background:var(--icon-btn-hover)}
 
 /* ── HAMBURGER → X ── */
+/*
 .hamburger{width:20px;height:14px;display:flex;flex-direction:column;justify-content:space-between}
 .hamburger span{display:block;height:2px;background:var(--text);border-radius:2px;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .25s,background .4s;transform-origin:center}
 .menu-open .hamburger span:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .menu-open .hamburger span:nth-child(2){opacity:0;transform:scaleX(0)}
 .menu-open .hamburger span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+*/
+
+.hamburger-wrap{position:relative;width:27px;height:27px;margin-top:-5px}
+.hamburger-gif{position:absolute;inset:0;width:27px;height:27px;transition:opacity .25s,transform .35s cubic-bezier(.4,0,.2,1);}
+.hamburger-x{position:absolute;top:9px;left:0;width:27px;height:14px;display:flex;flex-direction:column;justify-content:space-between;opacity:0;transition:opacity .25s;}
+.hamburger-x span{display:block;height:2px;background:var(--text);border-radius:2px;transform-origin:center;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .25s,background .4s;}
+.menu-open .hamburger-gif{opacity:0;transform:rotate(-90deg) scale(.5);}
+.menu-open .hamburger-x{opacity:1;}
+.menu-open .hamburger-x span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.menu-open .hamburger-x span:nth-child(2){opacity:0;transform:scaleX(0);}
+.menu-open .hamburger-x span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 
 /* ── LOGO ── */
 /* EDIT: To use your own logo image, set the src on the <img> tag in the body and remove display:none from .logo img */
@@ -161,6 +173,7 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
 .page-card{
   position:relative;z-index:1;
   max-width:1500px;margin:0 auto;
+  min-height:590px;
   background:var(--card-bg);
   backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);
   border:1px solid var(--card-border);
@@ -302,8 +315,8 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
 ══════════════════════════════════════════ */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:26px}
 .form-card-head{padding:13px 20px;border-bottom:1px solid var(--glass-border);font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem}
-.form-card-head.reddit{color:#ff6d3b}
-.form-card-head.news{color:#22c97a}
+.form-card-head.reddit{color:#5ea9ff /*#ff6d3b*/;}
+.form-card-head.news{color:#2ce83c /*#22c97a*/;}
 .form-body{padding:20px}
 .flabel{display:block;margin-bottom:6px;font-size:.78rem;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
 .finput{width:100%;padding:10px 14px;background:var(--input-bg);border:1px solid var(--input-border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;transition:border-color .25s,box-shadow .25s;outline:none}
@@ -359,7 +372,7 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
 /* ══════════════════════════════════════════
    FOOTER
 ══════════════════════════════════════════ */
-.site-footer{font-family:'Great Vibes';text-align:center;color:var(--text-muted);padding:24px 0 8px;font-size:.99rem;position:relative;z-index:1;letter-spacing:2px}
+.site-footer{font-family:'Great Vibes';text-align:center;color:var(--text-muted);padding:24px 0 8px;font-size:.99rem;position:relative;z-index:1;letter-spacing:2px;margin-top:auto}
 
 /* ── FOOTER DUST EFFECT ── */
 .footer-text-wrap {position: relative;display: inline-block;white-space: nowrap;}
@@ -411,7 +424,8 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
 <!-- <img class="bg-media" src="YOUR_IMAGE_OR_GIF_URL" alt="background"/> --> <!-- For Image Background -->
 <div class="bg-tint"></div>
 
-<!-- DRAWER OVERLAY -->
+<!-- Drawer overlay -->
+
 <div class="drawer-overlay" id="overlay"></div>
 
 <!-- ══════════════════════════════════════════
@@ -420,11 +434,17 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
 <nav class="topnav">
   <div class="topnav-left">
     <button class="icon-btn" id="menuBtn" aria-label="Toggle menu">
-      <div class="hamburger"><span></span><span></span><span></span></div>
+      <div class="hamburger-wrap">
+        <img src="{{ url_for('static', filename='Images/B_m_hmbr.gif') }}" 
+         class="hamburger-gif" id="hamburgerGif" width="20" height="20"/>
+      <div class="hamburger hamburger-x"><span></span><span></span><span></span></div>
+  </div>
+      <!-- <div class="hamburger"><span></span><span></span><span></span></div> --> <!-- replacement for hamburger Incase, if any animation problem bugging it -->
     </button>
     <!-- EDIT: To use your own logo image:
-         1. Set src="path/to/your/logo.png" on the <img> tag below
+         1. Set src="Static/Images/Your_logo.png" on the <img> tag below
          2. Remove the display:none from .logo img in the CSS above -->
+
     <a class="logo" href="https://youtu.be/iik25wqIuFo?si=k7d9gRt2EUiTOR0t" target="_blank" rel="noopener noreferrer">
       <img src="{{ url_for('static', filename='Images/B_Icon.png') }}" data-default="{{ url_for('static', filename='Images/B_Icon.png') }}"
   data-hover="{{ url_for('static', filename='Images/B_Icon_lh.png') }}" alt="Logo" id="logoImg" />
@@ -445,7 +465,7 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
   <ul class="nav-menu">
     <li><a href="{{ url_for('main.index') }}" class="{% if request.endpoint == 'main.index' %}active-link{% endif %}"><span class="ni"><img src="{{ url_for('static', filename='Images/B_md.png') }}" alt="" width="18" height="18"></span> Dashboard</a></li>
     <li><a href="{{ url_for('main.collect_data') }}" class="{% if request.endpoint == 'main.collect_data' %}active-link{% endif %}"><span class="ni"><img src="{{ url_for('static', filename='Images/B_mc.png') }}" alt="" width="18" height="18"></span> Collect Data</a></li>
-    <li><a href="{{ url_for('main.list_sources') }}" class="{% if request.endpoint == 'main.list_sources' %}active-link{% endif %}"><span class="ni"><img src="{{ url_for('static', filename='Images/B_ms.png') }}" alt="" width="18" height="18"></span> Sources</a></li>
+    <li><a href="{{ url_for('main.list_sources') }}" class="{% if request.endpoint == 'main.list_sources' %}active-link{% endif %}"><span class="ni"><img src="{{ url_for('static', filename='Images/B_ms.png') }}" alt="" width="18" height="18"></span> Data Source</a></li>
     <li><a href="{{ url_for('main.about') }}" class="{% if request.endpoint == 'main.about' %}active-link{% endif %}"><span class="ni"><img src="{{ url_for('static', filename='Images/B_ma.png') }}" alt="" width="18" height="18"></span> About</a></li>
   </ul>
 </aside>
@@ -456,6 +476,7 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
 <div class="main-wrap" id="mainWrap">
 
   <!-- Flash Messages -->
+
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="flash-wrap">
@@ -476,14 +497,14 @@ body{font-family:'DM sans',sans-serif;min-height:100vh;color:var(--text);overflo
   <footer class="site-footer">
     <div style="display:flex;justify-content:center;width:100%">
       <div class="footer-text-wrap">
-        <div class="footer-default">
+        <a href="https://youtu.be/BTRxyV-kHxE?si=CVzXksLaLi04-lZS&t=417" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit"><div class="footer-default">
           <p>Don't Get Carried away with the Analysis Report</p>
-          <p style="margin-top:4px;opacity:.6">Built on 2026 by 3RR05</p>
+          <p style="margin-top:4px;opacity:.6">Built in March 2026 by 3RR05</p>
         </div>
         <div class="footer-hover">
           <p>Thou Hast Found an Easter Egg</p>
           <p style="margin-top:4px;opacity:.6">A Crown Befits Thee</p>
-        </div>
+        </div></a>
       </div>
     </div>
   </footer>
@@ -501,7 +522,8 @@ const themeBtn = document.getElementById('themeBtn');
 const mainWrap = document.getElementById('mainWrap');
 const html     = document.documentElement;
 
-// ── MENU TOGGLE ──
+// ── Menu Toggler ──
+
 function toggleMenu(force){
   const open = force !== undefined ? force : !drawer.classList.contains('open');
   drawer.classList.toggle('open', open);
@@ -511,7 +533,8 @@ function toggleMenu(force){
 menuBtn.addEventListener('click', () => toggleMenu());
 overlay.addEventListener('click', () => toggleMenu(false));
 
-// ── THEME TOGGLE (persisted in localStorage) ──
+// ── Theme toggler (persisted in localStorage) ──
+
 const savedTheme = localStorage.getItem('bda-theme');
 if(savedTheme) html.dataset.theme = savedTheme;
 themeBtn.addEventListener('click', () => {
@@ -520,7 +543,8 @@ themeBtn.addEventListener('click', () => {
   localStorage.setItem('bda-theme', next);
 });
 
-// ── DRAWER SPOTLIGHT (throttled) ──
+// ── Drawer spotlight (Throttled) ──
+
 let drawerRaf = null;
 drawer.addEventListener('mousemove', e => {
   if(drawerRaf) return;
@@ -532,7 +556,8 @@ drawer.addEventListener('mousemove', e => {
   });
 });
 
-// ── MAIN WRAP SPOTLIGHT (throttled) ──
+// ── Main wrap spotlight (throttled) ──
+
 let mainRaf = null;
 document.addEventListener('mousemove', e => {
   if(mainRaf) return;
@@ -544,7 +569,8 @@ document.addEventListener('mousemove', e => {
   });
 });
 
-// ── COUNT-UP ANIMATION ──
+// ── Count animation ──
+
 function countUp(el, target, duration){
   duration = duration || 700;
   const start = performance.now();
@@ -558,7 +584,8 @@ function countUp(el, target, duration){
   requestAnimationFrame(update);
 }
 
-// ── CHART / CARD REVEAL ON SCROLL ──
+// ── Chart/Card reveal on scroll ──
+
 function revealOnScroll(){
   const els = document.querySelectorAll('.chart-reveal');
   if(!els.length) return;
@@ -579,7 +606,8 @@ function revealOnScroll(){
   }, 80);
 }
 
-// ── INIT ON LOAD ──
+// ── Init on load ──
+
 window.addEventListener('load', () => {
   document.querySelectorAll('.stat-number[data-target]').forEach(el => {
     countUp(el, parseInt(el.dataset.target, 10));

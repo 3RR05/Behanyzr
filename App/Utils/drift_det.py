@@ -49,7 +49,7 @@ class Driftanalyzer:
         voc_evol= {}
         
         for win, grp in df.groupby(time_column):
-            all_txt= ''.join(grp[text_column])
+            all_txt= ' '.join(grp[text_column])
             
             wrds= all_txt.split()
             wrd_count= Counter(wrds)
