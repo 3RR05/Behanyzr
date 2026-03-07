@@ -12,6 +12,9 @@ def create_app(config_cls = 'App.Config.Config'):
     # Initialization With The App
     db.init_app(app)
     
+    with app.app_context():
+        db.create_all()
+    
     #Blueprint Registration
     from App.Route import m_bp, a_bp
     app.register_blueprint(m_bp)
