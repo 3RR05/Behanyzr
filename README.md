@@ -11,7 +11,7 @@
 
  A web application that track and analyze behavior and sentiment drifts using data scraped from Reddit/NewsAPI (Able to scrap from other social media if changes some logics in Utility modules).
 
-### Click on this link to view the website :
+### Click on this link to view the web application : https://behanyzr.onrender.com
 
 <div style="background-color: rgba(235, 128, 71, 0.18); border-left: 5px solid rgba(239, 124, 30, 0.87); padding: 15px; border-radius: 15px;"><h2 style="margin-top:0">🥁 Disclaimer</h2>
  <strong>This project is designed to only show sentiment drifts as positive/neutral/negative by comparing it with previous time windows, not the actual emotional state of a text context, so a negative/positive drift increment in a source only means the improvement of the text's sentiment label that depends on the text-case manner (Also sarcasm or slangs affect the model to render neutral to the word which would significantly affect the overall analysis, future deep learning model enhancements will fix the issue drastically)</strong>
@@ -210,6 +210,6 @@ This project is open-source and available under the [MIT License](LICENSE) ⚖�
 
 ## 👨‍💻 Scribbler
 
-<h1 style="font-family:'Pixelify Sans';font-size:50px;text-align:center;color:blue">3RR05</h1>
+<h1 style="font-family:'Pixelify Sans';font-size:50px;text-align:center;color:#934eed">3RR05</h1>
 
-<h2 style="font-family:'Great Vibes'; text-align:center; letter-spacing:3px"> ✨Gramercy For Thy Viewing/Forking Of This Creation✨<h2>
+<h2 style="font-family:'Great Vibes'; text-align:center; letter-spacing:3px;color:#2aeb51"> ✨Gramercy For Thy Viewing/Forking Of This Creation✨<h2>
