@@ -188,7 +188,7 @@ python Test_visuals.py
 
 ## 🔮 Future Enhancements (If Possible)
 
-- [ ] Advanced ML sentiment models (BERT, transformers)
+- [ ] Advanced ML/DL sentiment models (BERT, Transformers)
 - [ ] Real-time data streaming
 - [ ] User authentication
 - [ ] Export reports (PDF, CSV)
@@ -197,7 +197,7 @@ python Test_visuals.py
 
 ## 🤝 Contribution
 
-Contributions Blissfully Welcomes Here!, if you want to add/fix some thing this project:
+Contributions Blissfully Welcomes Here!, if you want to add/fix some things in this project:
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/fishbone-cleared`) ~ Name whatever you like  
 3. Commit changes (`git commit -m 'cleared the fishbone'`)
